@@ -1,0 +1,5 @@
+{
+  "name": "Promise Tool",
+  "description": "A bulk AI prompt and image generation engine. Create consistent, high-quality image prompts in batches and visualize them using Gemini models.",
+  "requestFramePermissions": []
+}
