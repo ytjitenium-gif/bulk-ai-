@@ -3,7 +3,7 @@ import Sidebar from './components/Sidebar';
 import ImageCard from './components/ImageCard';
 import { GenerationParams, GeneratedPrompt, PromptResponse } from './types';
 import { generatePrompts, generateImage } from './services/gemini';
-import { LayoutGrid, Wand2, AlertTriangle } from 'lucide-react';
+import { LayoutGrid, Wand2, AlertTriangle, Sparkles } from 'lucide-react';
 
 export default function App() {
   const [prompts, setPrompts] = useState<GeneratedPrompt[]>([]);
@@ -70,34 +70,41 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-black text-zinc-100">
+    <div className="flex flex-col md:flex-row min-h-screen text-slate-800 relative overflow-hidden bg-slate-50">
+      
+      {/* Ambient Background Blobs (Light Pastel) */}
+      <div className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-blue-200/40 rounded-full blur-[120px] pointer-events-none z-0"></div>
+      <div className="absolute bottom-[-10%] left-[10%] w-[600px] h-[600px] bg-purple-200/40 rounded-full blur-[100px] pointer-events-none z-0"></div>
+
       {/* Sidebar Form */}
       <Sidebar onSubmit={handleDraftPrompts} isGenerating={isDrafting} />
 
       {/* Main Content */}
-      <main className="flex-1 p-4 md:p-8 h-screen overflow-y-auto relative">
+      <main className="flex-1 p-4 md:p-8 h-screen overflow-y-auto relative z-10 scrollbar-thin">
         <div className="max-w-7xl mx-auto">
           
           {/* Header */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 bg-white/60 backdrop-blur-md p-6 rounded-2xl border border-slate-200 shadow-xl shadow-slate-200/50">
             <div>
-                <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                    <LayoutGrid className="text-blue-500" />
-                    Generated Prompts
+                <h2 className="text-3xl font-bold text-slate-900 flex items-center gap-3 tracking-tight">
+                    <div className="p-2 bg-blue-100 rounded-lg border border-blue-200">
+                        <LayoutGrid className="text-blue-600" size={24} />
+                    </div>
+                    Prompt Workspace
                 </h2>
-                <p className="text-zinc-400 mt-1">
+                <p className="text-slate-500 mt-2 text-sm font-medium pl-1">
                     {prompts.length > 0 
-                        ? `Showing ${prompts.length} generated prompts.` 
-                        : "Configure parameters on the left to start."}
+                        ? `Viewing ${prompts.length} generated prompts ready for visualization.` 
+                        : "Configure your parameters on the left sidebar to begin."}
                 </p>
             </div>
 
             {prompts.length > 0 && (
                 <button 
                     onClick={handleGenerateAll}
-                    className="bg-white text-black hover:bg-zinc-200 px-5 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-colors shadow-lg shadow-white/5"
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white shadow-lg shadow-orange-500/20 px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all hover:scale-105"
                 >
-                    <Wand2 size={18} />
+                    <Wand2 size={20} />
                     Generate All Images
                 </button>
             )}
@@ -105,18 +112,20 @@ export default function App() {
 
           {/* Error Banner */}
           {error && (
-            <div className="bg-red-900/20 border border-red-900/50 text-red-200 p-4 rounded-lg mb-6 flex items-center gap-3">
-                <AlertTriangle size={20} />
+            <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl mb-6 flex items-center gap-3 backdrop-blur-sm shadow-sm">
+                <AlertTriangle size={20} className="text-red-600" />
                 {error}
             </div>
           )}
 
           {/* Empty State */}
           {prompts.length === 0 && !isDrafting && !error && (
-             <div className="h-[60vh] flex flex-col items-center justify-center text-zinc-600 border-2 border-dashed border-zinc-800 rounded-2xl bg-zinc-900/20">
-                <Wand2 size={48} className="mb-4 opacity-20" />
-                <p className="text-lg font-medium">Ready to forge</p>
-                <p className="text-sm">Set your parameters and click "Generate Prompts"</p>
+             <div className="h-[55vh] flex flex-col items-center justify-center text-slate-400 border-2 border-dashed border-slate-200 rounded-3xl bg-white/40 backdrop-blur-sm">
+                <div className="p-6 bg-white rounded-full mb-6 shadow-xl shadow-slate-200">
+                    <Sparkles size={48} className="text-slate-300" />
+                </div>
+                <p className="text-xl font-bold text-slate-700">Canvas Empty</p>
+                <p className="text-sm mt-2 opacity-60">Set your parameters and click "Generate Prompts"</p>
              </div>
           )}
 
@@ -124,7 +133,7 @@ export default function App() {
           {isDrafting && (
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
                 {[...Array(4)].map((_, i) => (
-                    <div key={i} className="bg-zinc-900 rounded-xl h-96 border border-zinc-800"></div>
+                    <div key={i} className="bg-white rounded-2xl h-96 border border-slate-200 shadow-sm"></div>
                 ))}
              </div>
           )}

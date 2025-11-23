@@ -23,12 +23,6 @@ Always output in this JSON format:
      { "final_prompt": "..." }
   ]
 }
-
-CRITICAL QUALITY RULES:
-1. **NO BLUR**: Every prompt MUST include keywords: "sharp focus", "crystal clear", "8k resolution", "highly detailed", "intricate texture", "masterpiece".
-2. **TEXT ACCURACY**: If text is provided, especially HINDI/Devanagari, you MUST preserve it EXACTLY. Do not change spelling. 
-   - Add keywords: "clearly written text", "correct typography", "bold font", "legible".
-   - If Hindi: "text written in correct Devanagari script".
 `;
 
   const userContent = `
@@ -40,7 +34,8 @@ Generate ${params.imageCount} image prompts.
 Theme: ${params.theme}
 Style: ${params.style}
 Camera angle: ${params.cameraAngle}
-Quality: ${params.quality} (Ensure result is SHARP and NOT BLURRY)
+Quality: ${params.quality}
+Resolution: ${params.resolution || "1K"}
 Format/Ratio: ${params.formatRatio}
 
 Character description (optional): ${params.characterDescription || "None"}
@@ -58,15 +53,12 @@ RULES
 2. Each image must follow all selected parameters.
 3. If a character description is provided, keep the character’s appearance consistent.
 4. If a reference image is provided, ensure the prompts describe the subject in a way that aligns with using that image as a strong reference.
-5. **TEXT HANDLING (CRITICAL)**: 
-   - Place text cleanly on the image. 
-   - If '${params.textOverlay}' contains Hindi/Devanagari characters, the prompt MUST say: "text '${params.textOverlay}' written in flawless, correct Devanagari script".
-   - Ensure text contrast is high against the background.
+5. If text is provided, place it cleanly on the image.
 6. All prompts must include:
    - Theme
    - Style
    - Camera angle
-   - Quality (Force: "Sharp focus", "8k", "Ultra detailed")
+   - Quality (HD/4K/8K/Ultra)
    - Format/ratio
    - Color tone
    - Optional text overlay details

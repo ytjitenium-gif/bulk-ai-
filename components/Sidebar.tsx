@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { GenerationParams, AspectRatio } from '../types';
-import { Settings2, Palette, Camera, User, Type as TypeIcon, Sparkles, ChevronDown, Upload, X, Image as ImageIcon, Wrench, Hammer } from 'lucide-react';
+import { Settings2, Palette, Camera, User, Type as TypeIcon, Sparkles, ChevronDown, Upload, X, Hammer } from 'lucide-react';
 
 interface SidebarProps {
   onSubmit: (params: GenerationParams) => void;
@@ -270,6 +270,13 @@ const FONT_GROUPS = [
   }
 ];
 
+const RESOLUTION_OPTIONS = [
+  { label: '1K (Standard)', value: '1K' },
+  { label: '2K (High Detail)', value: '2K' },
+  { label: '4K (Ultra HD)', value: '4K' },
+  { label: '8K (Super Res)', value: '8K' },
+];
+
 const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
   const [params, setParams] = useState<GenerationParams>({
     imageCount: 4,
@@ -285,6 +292,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
     colorsStyle: 'Neon, Cyberpunk',
     extraInstructions: '',
     referenceImage: undefined,
+    resolution: '1K',
   });
 
   const [isCustomTheme, setIsCustomTheme] = useState(false);
@@ -379,44 +387,43 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
   };
 
   return (
-    <aside className="w-full md:w-80 lg:w-96 bg-zinc-900 border-r border-zinc-800 h-screen overflow-y-auto sticky top-0 scrollbar-thin">
-      <div className="p-6 border-b border-zinc-800">
+    <aside className="w-full md:w-80 lg:w-96 bg-white/70 backdrop-blur-2xl border-r border-slate-200 h-screen overflow-y-auto sticky top-0 scrollbar-thin z-20 shadow-xl shadow-slate-200/50">
+      <div className="p-6 border-b border-slate-200">
         <div className="flex items-center gap-3 mb-2">
-          {/* Custom Logo: Blue Square with Orange Crossed Tools (Wrench + Hammer) */}
-          <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center relative overflow-hidden shrink-0 shadow-lg shadow-blue-900/40">
-              <Wrench className="absolute text-amber-500 w-6 h-6 transform -rotate-[135deg] top-2 left-2" strokeWidth={2.5} />
-              <Hammer className="absolute text-amber-500 w-6 h-6 transform -rotate-[45deg] top-2 right-2" strokeWidth={2.5} />
+           <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center relative shrink-0 shadow-lg shadow-blue-500/20">
+             <Hammer className="text-amber-400 absolute rotate-45" strokeWidth={2.5} size={20} />
+             <Hammer className="text-amber-400 absolute -rotate-45" strokeWidth={2.5} size={20} />
           </div>
-          <h1 className="text-xl font-bold text-white tracking-tight">Promise Tool</h1>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent tracking-tight">Promise Tool</h1>
         </div>
-        <p className="text-xs text-zinc-400">Bulk AI Prompt & Image Engine</p>
+        <p className="text-xs text-slate-500 font-medium tracking-wide">AI VISUAL ENGINE</p>
       </div>
 
       <form onSubmit={handleSubmit} className="p-6 space-y-8">
         
         {/* Core Settings */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2 text-blue-400 text-sm font-semibold uppercase tracking-wider">
-            <Settings2 size={14} /> Core Settings
+          <div className="flex items-center gap-2 text-blue-600 text-sm font-bold uppercase tracking-wider">
+            <Settings2 size={14} className="text-blue-600" /> Core Settings
           </div>
           
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
-              <label className="block text-xs text-zinc-400 mb-1">Theme</label>
-              <div className="relative">
+              <label className="block text-xs text-slate-500 mb-1.5 font-medium">Theme</label>
+              <div className="relative group">
                 <select
                   value={isCustomTheme ? 'custom' : params.theme}
                   onChange={handleThemeChange}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-blue-500 outline-none appearance-none"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 outline-none appearance-none transition-all hover:bg-slate-50"
                 >
                   {THEME_PRESETS.map((preset) => (
                     <option key={preset.value} value={preset.value}>
                       {preset.label}
                     </option>
                   ))}
-                  <option value="custom">Custom...</option>
+                  <option value="custom" className="font-semibold text-blue-600">Custom...</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={14} />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-slate-600 transition-colors" size={14} />
               </div>
               
               {isCustomTheme && (
@@ -425,7 +432,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
                   name="theme"
                   value={params.theme}
                   onChange={handleChange}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-blue-500 outline-none mt-2"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 outline-none mt-2 placeholder-slate-400 transition-all"
                   placeholder="Enter custom theme..."
                   autoFocus
                   required
@@ -434,7 +441,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
             </div>
 
              <div className="col-span-1">
-              <label className="block text-xs text-zinc-400 mb-1">Count (1-50)</label>
+              <label className="block text-xs text-slate-500 mb-1.5 font-medium">Count (1-50)</label>
               <input
                 type="number"
                 name="imageCount"
@@ -442,18 +449,18 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
                 max="50"
                 value={params.imageCount}
                 onChange={handleChange}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 outline-none transition-all hover:bg-slate-50"
               />
             </div>
 
             <div className="col-span-1">
-               <label className="block text-xs text-zinc-400 mb-1">Ratio</label>
-               <div className="relative">
+               <label className="block text-xs text-slate-500 mb-1.5 font-medium">Ratio</label>
+               <div className="relative group">
                  <select
                   name="formatRatio"
                   value={params.formatRatio}
                   onChange={handleChange}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-blue-500 outline-none appearance-none"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 outline-none appearance-none transition-all hover:bg-slate-50"
                 >
                   <option value={AspectRatio.Square}>1:1 Square</option>
                   <option value={AspectRatio.Wide}>16:9 Wide</option>
@@ -461,7 +468,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
                   <option value={AspectRatio.Portrait}>3:4 Portrait</option>
                   <option value={AspectRatio.Landscape}>4:3 Landscape</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={14} />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-slate-600 transition-colors" size={14} />
                </div>
             </div>
           </div>
@@ -469,27 +476,27 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
 
         {/* Artistic Style */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2 text-purple-400 text-sm font-semibold uppercase tracking-wider">
-            <Palette size={14} /> Style & Tone
+          <div className="flex items-center gap-2 text-purple-600 text-sm font-bold uppercase tracking-wider">
+            <Palette size={14} className="text-purple-600" /> Style & Tone
           </div>
           
-          <div className="space-y-3">
+          <div className="space-y-4">
              <div>
-              <label className="block text-xs text-zinc-400 mb-1">Art Style</label>
-              <div className="relative">
+              <label className="block text-xs text-slate-500 mb-1.5 font-medium">Art Style</label>
+              <div className="relative group">
                 <select
                   value={isCustomStyle ? 'custom' : params.style}
                   onChange={handleStyleChange}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-purple-500 outline-none appearance-none"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 outline-none appearance-none transition-all hover:bg-slate-50"
                 >
                   {STYLE_PRESETS.map((preset) => (
                     <option key={preset.value} value={preset.value}>
                       {preset.label}
                     </option>
                   ))}
-                  <option value="custom">Custom...</option>
+                  <option value="custom" className="font-semibold text-purple-600">Custom...</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={14} />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-slate-600 transition-colors" size={14} />
               </div>
               {isCustomStyle && (
                 <input
@@ -497,7 +504,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
                   name="style"
                   value={params.style}
                   onChange={handleChange}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-purple-500 outline-none mt-2"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 outline-none mt-2 transition-all placeholder-slate-400"
                   placeholder="e.g. Oil Painting, 3D Render"
                   autoFocus
                 />
@@ -505,21 +512,21 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
             </div>
             
             <div>
-              <label className="block text-xs text-zinc-400 mb-1">Color Tone</label>
-              <div className="relative">
+              <label className="block text-xs text-slate-500 mb-1.5 font-medium">Color Tone</label>
+              <div className="relative group">
                 <select
                   value={isCustomColor ? 'custom' : params.colorsStyle}
                   onChange={handleColorChange}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-purple-500 outline-none appearance-none"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 outline-none appearance-none transition-all hover:bg-slate-50"
                 >
                   {COLOR_PRESETS.map((preset) => (
                     <option key={preset.value} value={preset.value}>
                       {preset.label}
                     </option>
                   ))}
-                  <option value="custom">Custom...</option>
+                  <option value="custom" className="font-semibold text-purple-600">Custom...</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={14} />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-slate-600 transition-colors" size={14} />
               </div>
                {isCustomColor && (
                  <input
@@ -527,38 +534,55 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
                   name="colorsStyle"
                   value={params.colorsStyle}
                   onChange={handleChange}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-purple-500 outline-none mt-2"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 outline-none mt-2 transition-all placeholder-slate-400"
                   placeholder="e.g. Pastel, Neon, Grayscale"
                   autoFocus
                 />
                )}
             </div>
 
+            <div className="col-span-2">
+                <label className="block text-xs text-slate-500 mb-1.5 font-medium">Camera Angle</label>
+                <div className="relative group">
+                <select name="cameraAngle" value={params.cameraAngle} onChange={handleChange} className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 outline-none appearance-none transition-all hover:bg-slate-50">
+                    <option value="Wide Angle">Wide Angle</option>
+                    <option value="Close Up">Close Up</option>
+                    <option value="Aerial View">Aerial View</option>
+                    <option value="Eye Level">Eye Level</option>
+                    <option value="Low Angle">Low Angle</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-slate-600 transition-colors" size={14} />
+                </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
                <div>
-                  <label className="block text-xs text-zinc-400 mb-1">Camera</label>
-                  <div className="relative">
-                    <select name="cameraAngle" value={params.cameraAngle} onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-purple-500 outline-none appearance-none">
-                      <option value="Wide Angle">Wide Angle</option>
-                      <option value="Close Up">Close Up</option>
-                      <option value="Aerial View">Aerial View</option>
-                      <option value="Eye Level">Eye Level</option>
-                      <option value="Low Angle">Low Angle</option>
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={14} />
-                  </div>
-               </div>
-               <div>
-                  <label className="block text-xs text-zinc-400 mb-1">Quality</label>
-                  <div className="relative">
-                     <select name="quality" value={params.quality} onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-purple-500 outline-none appearance-none">
+                  <label className="block text-xs text-slate-500 mb-1.5 font-medium">Quality</label>
+                  <div className="relative group">
+                     <select name="quality" value={params.quality} onChange={handleChange} className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 outline-none appearance-none transition-all hover:bg-slate-50">
                       <option value="HD">HD</option>
                       <option value="4K">4K</option>
                       <option value="8K">8K</option>
                       <option value="Ultra Realistic">Ultra</option>
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={14} />
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-slate-600 transition-colors" size={14} />
                   </div>
+               </div>
+               <div>
+                   <label className="block text-xs text-slate-500 mb-1.5 font-medium">Resolution</label>
+                    <div className="relative group">
+                        <select
+                            name="resolution"
+                            value={params.resolution}
+                            onChange={handleChange}
+                            className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 outline-none appearance-none transition-all hover:bg-slate-50"
+                        >
+                            {RESOLUTION_OPTIONS.map(opt => (
+                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                            ))}
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-slate-600 transition-colors" size={14} />
+                    </div>
                </div>
             </div>
           </div>
@@ -566,43 +590,43 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
 
         {/* Subject & Text */}
         <div className="space-y-4">
-           <div className="flex items-center gap-2 text-emerald-400 text-sm font-semibold uppercase tracking-wider">
-            <User size={14} /> Subject
+           <div className="flex items-center gap-2 text-emerald-600 text-sm font-bold uppercase tracking-wider">
+            <User size={14} className="text-emerald-600" /> Subject
           </div>
           <div>
-            <label className="block text-xs text-zinc-400 mb-1">Character Description (Optional)</label>
+            <label className="block text-xs text-slate-500 mb-1.5 font-medium">Character Description (Optional)</label>
             <textarea
               name="characterDescription"
               value={params.characterDescription}
               onChange={handleChange}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-emerald-500 outline-none resize-none h-20"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none resize-none h-20 transition-all placeholder-slate-400"
               placeholder="A robot with blue eyes..."
             />
           </div>
 
           <div>
-             <label className="block text-xs text-zinc-400 mb-1">Character Reference (Optional)</label>
+             <label className="block text-xs text-slate-500 mb-1.5 font-medium">Character Reference (Optional)</label>
              {!params.referenceImage ? (
                 <div 
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full h-24 border-2 border-dashed border-zinc-700 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500 hover:bg-zinc-800/50 transition-all group"
+                  className="w-full h-24 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition-all group"
                 >
-                   <Upload className="text-zinc-500 group-hover:text-emerald-400 mb-2" size={20} />
-                   <span className="text-xs text-zinc-500 group-hover:text-zinc-300">Upload Reference Image</span>
+                   <Upload className="text-slate-400 group-hover:text-emerald-500 mb-2 transition-colors" size={20} />
+                   <span className="text-xs text-slate-500 group-hover:text-emerald-700 transition-colors">Upload Reference Image</span>
                 </div>
              ) : (
-                <div className="relative w-full h-32 rounded-lg overflow-hidden border border-zinc-700 group">
+                <div className="relative w-full h-32 rounded-xl overflow-hidden border border-slate-300 group shadow-lg">
                    <img src={params.referenceImage} alt="Reference" className="w-full h-full object-cover" />
-                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
                       <button 
                         type="button"
                         onClick={removeReferenceImage}
-                        className="p-2 bg-red-500/80 hover:bg-red-500 text-white rounded-full transition-colors"
+                        className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-full transition-transform hover:scale-110 shadow-lg"
                       >
-                         <X size={16} />
+                         <X size={18} />
                       </button>
                    </div>
-                   <div className="absolute bottom-1 right-2 bg-black/60 px-2 py-0.5 rounded text-[10px] text-white backdrop-blur-sm">
+                   <div className="absolute bottom-2 right-2 bg-black/70 px-2 py-1 rounded text-[10px] text-white backdrop-blur-md border border-white/10">
                       Reference Active
                    </div>
                 </div>
@@ -614,32 +638,32 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
                accept="image/*" 
                className="hidden" 
              />
-             <p className="text-[10px] text-zinc-500 mt-1">Upload an image to maintain consistency.</p>
+             <p className="text-[10px] text-slate-400 mt-2 ml-1">Upload an image to maintain consistent character features.</p>
           </div>
 
-          <div className="flex items-center gap-2 text-amber-400 text-sm font-semibold uppercase tracking-wider mt-6">
-            <TypeIcon size={14} /> Text Overlay
+          <div className="flex items-center gap-2 text-amber-600 text-sm font-bold uppercase tracking-wider mt-8 border-t border-slate-200 pt-6">
+            <TypeIcon size={14} className="text-amber-600" /> Text Overlay
           </div>
           <div>
-            <label className="block text-xs text-zinc-400 mb-1">Text Content (Optional)</label>
+            <label className="block text-xs text-slate-500 mb-1.5 font-medium">Text Content (Optional)</label>
             <input
               type="text"
               name="textOverlay"
               value={params.textOverlay}
               onChange={handleChange}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-amber-500 outline-none"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 outline-none transition-all placeholder-slate-400"
               placeholder="Text to appear on image"
             />
           </div>
           {params.textOverlay && (
             <div className="grid grid-cols-2 gap-4">
                <div>
-                  <label className="block text-xs text-zinc-400 mb-1">Font Style</label>
-                  <div className="relative">
+                  <label className="block text-xs text-slate-500 mb-1.5 font-medium">Font Style</label>
+                  <div className="relative group">
                     <select
                       value={isCustomFont ? 'custom' : params.fontStyle}
                       onChange={handleFontChange}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-amber-500 outline-none appearance-none"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 outline-none appearance-none transition-all hover:bg-slate-50"
                     >
                       {FONT_GROUPS.map((group) => (
                         <optgroup key={group.label} label={group.label}>
@@ -650,9 +674,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
                           ))}
                         </optgroup>
                       ))}
-                      <option value="custom">Custom...</option>
+                      <option value="custom" className="font-bold text-amber-600">Custom...</option>
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={14} />
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-slate-600 transition-colors" size={14} />
                   </div>
                   {isCustomFont && (
                     <input
@@ -660,19 +684,19 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
                         name="fontStyle"
                         value={params.fontStyle}
                         onChange={handleChange}
-                        className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-amber-500 outline-none mt-2"
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 outline-none mt-2 transition-all placeholder-slate-400"
                         placeholder="e.g. Comic Sans"
                         autoFocus
                     />
                   )}
                </div>
                 <div>
-                  <label className="block text-xs text-zinc-400 mb-1">Text Color</label>
-                  <div className="relative">
+                  <label className="block text-xs text-slate-500 mb-1.5 font-medium">Text Color</label>
+                  <div className="relative group">
                     <select
                       value={isCustomTextColor ? 'custom' : params.textColor}
                       onChange={handleTextColorChange}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-amber-500 outline-none appearance-none"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 outline-none appearance-none transition-all hover:bg-slate-50"
                     >
                       {TEXT_COLOR_GROUPS.map((group) => (
                         <optgroup key={group.label} label={group.label}>
@@ -683,9 +707,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
                           ))}
                         </optgroup>
                       ))}
-                      <option value="custom">Custom...</option>
+                      <option value="custom" className="font-bold text-amber-600">Custom...</option>
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={14} />
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-slate-600 transition-colors" size={14} />
                   </div>
                    {isCustomTextColor && (
                     <input
@@ -693,7 +717,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
                         name="textColor"
                         value={params.textColor}
                         onChange={handleChange}
-                        className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-amber-500 outline-none mt-2"
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 outline-none mt-2 transition-all placeholder-slate-400"
                         placeholder="e.g. Neon Pink"
                         autoFocus
                     />
@@ -704,14 +728,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
         </div>
 
         {/* Extra */}
-        <div className="space-y-4 pt-2 border-t border-zinc-800">
+        <div className="space-y-4 pt-4 border-t border-slate-200">
           <div>
-            <label className="block text-xs text-zinc-400 mb-1">Extra Instructions</label>
+            <label className="block text-xs text-slate-500 mb-1.5 font-medium">Extra Instructions</label>
             <textarea
               name="extraInstructions"
               value={params.extraInstructions}
               onChange={handleChange}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:ring-2 focus:ring-zinc-500 outline-none resize-none h-16"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:ring-2 focus:ring-slate-400/50 focus:border-slate-500 outline-none resize-none h-16 transition-all placeholder-slate-400"
               placeholder="Any specific details..."
             />
           </div>
@@ -720,7 +744,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
         <button
           type="submit"
           disabled={isGenerating}
-          className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 shadow-lg shadow-blue-900/20"
+          className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:via-indigo-500 hover:to-purple-500 text-white font-bold py-3.5 px-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 hover:-translate-y-0.5"
         >
           {isGenerating ? (
             <>
@@ -732,7 +756,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onSubmit, isGenerating }) => {
             </>
           ) : (
             <>
-              <Sparkles size={18} />
+              <Sparkles size={18} className="fill-white/20" />
               Generate Prompts
             </>
           )}
