@@ -1,8 +1,6 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { GenerationParams, PromptResponse, AspectRatio } from "../types";
 
-// Initialize the client
-// The API key is injected via process.env.API_KEY
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const PROMPT_GENERATION_MODEL = "gemini-2.5-flash";
